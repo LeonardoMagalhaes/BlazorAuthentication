@@ -1,4 +1,5 @@
 ﻿using BlazorApp.Api.Models;
+using BlazorApp.Models.DTOs;
 
 namespace BlazorApp.Api.Services
 {
@@ -6,7 +7,7 @@ namespace BlazorApp.Api.Services
     {
         List<User> GetUsers();
         User GetUser(string id);
-        User CreateUser(User user);
+        User CreateUser(UserRequestDTO user);
         string AuthenticateUser(string email, string password);
     }
 }

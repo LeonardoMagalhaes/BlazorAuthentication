@@ -1,5 +1,5 @@
 ﻿using BlazorApp.Api.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using BlazorApp.Models.DTOs;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.IdentityModel.Tokens.Jwt;
@@ -26,8 +26,21 @@ namespace BlazorApp.Api.Services
 
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
 
-        public User CreateUser(User user)
+        public User CreateUser(UserRequestDTO request)
         {
+            var userExists = _users.Find<User>(user => user.Email == request.Email).FirstOrDefault();
+            if (userExists != null)
+            {
+                return null;
+            }
+
+            var user = new User
+            {
+                Email = request.Email,
+                Password = request.Password,
+                Role = request.Role
+            };
+
             _users.InsertOne(user);
             return user;
         }

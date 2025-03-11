@@ -33,28 +33,60 @@ namespace BlazorApp.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<User>> GetUsers()
+        public ActionResult<List<UserResponseDTO>> GetUsers()
         {
-            return _userService.GetUsers();
+            var response = _userService.GetUsers().Select(u => new UserResponseDTO
+            {
+                Id = u.Id.ToString(),
+                Email = u.Email,
+                Role = u.Role
+            }).ToList();
+            return response;
         }
 
-        [HttpGet("{id:length(24)}", Name = "GetUser")]
-        public ActionResult<User> GetUser(string id)
+        [HttpGet("{id}")]
+        public ActionResult<UserResponseDTO> GetUserById(string id)
         {
             var user = _userService.GetUser(id);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("User not found!");
             }
-            return Json(user);
+
+            var response = new UserResponseDTO
+            {
+                Id = user.Id.ToString(),
+                Email = user.Email,
+                Role = user.Role
+            };
+            return Json(response);
         }
 
         [HttpPost]
-        public ActionResult<User> CreateUser(User user)
+        public ActionResult<UserResponseDTO> CreateUser(UserRequestDTO user)
         {
-            _userService.CreateUser(user);
+            try
+            {
+                var response = _userService.CreateUser(user);
 
-            return Ok();
+                if (response is null)
+                {
+                    return BadRequest("User already exists!");
+                }
+
+                return Ok(new UserResponseDTO
+                {
+                    Id = response.Id.ToString(),
+                    Email = response.Email,
+                    Role = response.Role
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                return BadRequest("User already exists!");
+            }
         }
     }
 }
