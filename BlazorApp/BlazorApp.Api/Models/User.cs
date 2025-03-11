@@ -6,6 +6,7 @@ namespace BlazorApp.Api.Models
     public class User
     {
         [BsonId]
+        [BsonElement("_id")]
         public string Id { get; set; }
 
         [BsonElement("Email")]
@@ -13,5 +14,8 @@ namespace BlazorApp.Api.Models
 
         [BsonElement("Password")]
         public string Password { get; set; } = string.Empty;
+
+        [BsonElement("Role")]
+        public string Role { get; set; } = "USER";
     }
 }

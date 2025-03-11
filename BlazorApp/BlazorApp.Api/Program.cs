@@ -15,6 +15,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton(db =>
     (IDatabaseSettings)db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
+// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 builder.Services.AddAuthentication(x =>
     {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -34,6 +46,9 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
+
 builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
@@ -45,6 +60,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

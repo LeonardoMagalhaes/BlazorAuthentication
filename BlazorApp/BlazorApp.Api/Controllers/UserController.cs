@@ -1,5 +1,6 @@
 ﻿using BlazorApp.Api.Models;
 using BlazorApp.Api.Services;
+using BlazorApp.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,14 +21,15 @@ namespace BlazorApp.Api.Controllers
         [AllowAnonymous]
         [Route("authenticate")]
         [HttpPost]
-        public ActionResult<string> Login([FromBody] User user)
+        public ActionResult<string> Login([FromBody] AuthenticateUserRequestDTO user)
         {
             var token = _userService.AuthenticateUser(user.Email, user.Password);
             if (token == null)
             {
                 return Unauthorized();
             }
-            return Ok(new { token, user });
+
+            return Ok(new AuthenticateUserResponseDTO<AuthenticateUserRequestDTO> { Token = token, User = user });
         }
 
         [HttpGet]

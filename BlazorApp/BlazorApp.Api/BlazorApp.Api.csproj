@@ -20,4 +20,8 @@
     <Folder Include="Dtos\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorApp.Models\BlazorApp.Models.csproj" />
+  </ItemGroup>
+
 </Project>
