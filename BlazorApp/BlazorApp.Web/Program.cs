@@ -24,6 +24,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 // Services
 builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IManageLocalStorageService, ManageLocalStorageService>();
 
 var baseUrl = "https://localhost:7075";
 builder.Services.AddScoped(sp => new HttpClient

@@ -1,6 +1,5 @@
 ﻿@page "/login"
 @inject NavigationManager Navigation
-@inject IJSRuntime JS
 
 <div class="row">
     <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
@@ -35,7 +34,9 @@
     public HttpClient _httpClient { get; set; }
 
     [Inject]
-	public ILoginService _loginService { get; set; }
+    public ILoginService _loginService { get; set; }
+    [Inject]
+    public IManageLocalStorageService _managerStorageService { get; set; }
 
     [SupplyParameterFromForm]
     public LoginViewModel Model { get; set; } = new();
@@ -44,8 +45,15 @@
 
     private async Task Authenticate()
     {
-        var result = _loginService.Authenticate(Model.Email, Model.Password);
+        var result = await _loginService.Authenticate(Model.Email, Model.Password);
 
-        Console.WriteLine("finish.");
+		if (result == null)
+		{
+			errorMessage = "Authentication failed.";
+			return;
+		}
+
+        await _managerStorageService.AddAuthToken(result);
+		Navigation.NavigateTo("/");
     }
 }

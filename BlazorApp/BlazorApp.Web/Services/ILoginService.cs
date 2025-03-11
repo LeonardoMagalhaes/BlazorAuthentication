@@ -2,6 +2,6 @@
 {
     public interface ILoginService
     {
-        Task<object> Authenticate(string email, string password);
+        Task<string?> Authenticate(string email, string password);
     }
 }

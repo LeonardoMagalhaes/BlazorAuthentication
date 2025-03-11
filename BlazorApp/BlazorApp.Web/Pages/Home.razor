@@ -1,7 +1,5 @@
 ﻿@page "/"
 @inject NavigationManager Navigation
-@inject HttpClient Http
-@inject IJSRuntime JS
 
 <PageTitle>Home</PageTitle>
 
@@ -18,10 +16,12 @@ else
 @code {
     private bool isAuthenticated;
 
+    [Inject]
+    public IManageLocalStorageService _managerStorageService { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var token = await GetTokenAsync();
-        if (string.IsNullOrEmpty(token))
+        if (string.IsNullOrEmpty(await _managerStorageService.GetAuthToken()))
         {
             Navigation.NavigateTo("/login");
         }
@@ -29,10 +29,5 @@ else
         {
             isAuthenticated = true;
         }
-    }
-
-    private async Task<string> GetTokenAsync()
-    {
-        return await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
     }
 }
